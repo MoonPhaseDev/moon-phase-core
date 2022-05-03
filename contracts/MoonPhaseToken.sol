@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
+pragma solidity 0.8.10;
 
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
@@ -79,6 +79,9 @@ contract MoonPhaseToken is
         address _royaltyReceiver,
         uint256 _royaltyPercentBips
     ) ERC721(_name, _symbol) {
+        // confirm receiver
+        require(_royaltyReceiver != address(0), "MoonPhaseToken: receiver is the zero address");
+
         // set royalties
         _setRoyalty(_royaltyReceiver, _royaltyPercentBips);
 
@@ -251,7 +254,7 @@ contract MoonPhaseToken is
         returns (address receiver, uint256 royaltyAmount)
     {
         receiver = address(royaltyReceiver);
-        require(receiver != address(0));
+        require(receiver != address(0), "MoonPhaseToken: receiver is the zero address");
         royaltyAmount = (_salePrice * royaltyPercentBips) / 10000; // 10,000 is 100% in bips
     }
 
