@@ -146,6 +146,24 @@ contract MoonPhaseToken is
     }
 
     /**
+     * @notice Burns a token. An emergency feature if a token is inappropriately
+     * minted (e.g. with incorrect tokenUri or tokenId) that will be disabled
+     * once minting is complete (by fully renouncing MINTER roll).
+     *
+     * * Requirements:
+     *
+     * - `tokenId` must exist.
+     * - the caller must have the `MINTER_ROLE`.
+     */
+    function burn(uint256 tokenId) external virtual {
+        require(hasRole(MINTER_ROLE, _msgSender()), "MoonPhaseToken: must have minter role to burn");
+        require(_exists(tokenId), "MoonPhaseToken: burn of nonexistent token");
+        // reset status and destroy the token
+        _setTrophyStatus(tokenId, STATUS_IN_PROGRESS);
+        _burn(tokenId);
+    }
+
+    /**
      * @notice Update the tokenURI for the given tokenId.
      *
      * * Requirements:

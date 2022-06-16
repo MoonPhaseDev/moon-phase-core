@@ -280,6 +280,101 @@ function testSafeMint(tester, testConfig = true) {
   });
 }
 
+function testBurn(tester, testConfig = true) {
+  context('burn', () => {
+    if (testConfig) testUtilityConfig(tester, ["deployer", "alice",  "bob", "carol", "minter", "shipper"]);
+
+    it('cannot burn a nonexistent token', async () => {
+      const { token, deployer, alice, bob, minter } = tester;
+
+      await expectRevert(
+        token.burn(0, { from:deployer }),
+        "MoonPhaseToken: burn of nonexistent token",
+      );
+
+      await token.mint(alice, 77, "token_77_URI", { from:deployer });
+
+      await expectRevert(
+        token.burn(76, { from:deployer }),
+        "MoonPhaseToken: burn of nonexistent token",
+      );
+    })
+
+    it('non-minters cannot burn', async () =>  {
+      const { token, alice, bob, carol, shipper, deployer } = tester;
+
+      await token.mint(alice, 0, "token_0_URI", { from:deployer });
+
+      await expectRevert(
+        token.burn(0, { from:bob }),
+        "MoonPhaseToken: must have minter role to burn",
+      );
+
+      await expectRevert(
+        token.burn(0, { from:alice }),
+        "MoonPhaseToken: must have minter role to burn",
+      );
+
+      await expectRevert(
+        token.burn(0, { from:shipper }),
+        "MoonPhaseToken: must have minter role to burn",
+      );
+    });
+
+    it('burning destroys a token', async () => {
+      const { token, deployer, alice, bob, minter } = tester;
+
+      await token.mint(alice, 77, "token_77_URI", { from:deployer });
+      await token.mint(alice, 2, "token_2_URI", { from:deployer });
+      await token.mint(bob, 101, "token_101_URI", { from:deployer });
+
+      await token.burn(77, { from:deployer });
+
+      assert.equal(await token.totalSupply(), '2');
+      assert.equal(await token.balanceOf(alice), '1');
+      assert.equal(await token.balanceOf(bob), '1');
+      assert.equal(await token.balanceOf(deployer), '0');
+
+      assert.equal(await token.tokenByIndex(0), '101');
+      assert.equal(await token.tokenByIndex(1), '2');
+      assert.equal(await token.tokenOfOwnerByIndex(alice, 0), '2');
+      assert.equal(await token.tokenOfOwnerByIndex(bob, 0), '101');
+
+      await token.burn(101, { from:minter });
+
+      assert.equal(await token.totalSupply(), '1');
+      assert.equal(await token.balanceOf(alice), '1');
+      assert.equal(await token.balanceOf(bob), '0');
+      assert.equal(await token.balanceOf(deployer), '0');
+
+      assert.equal(await token.tokenByIndex(0), '2');
+    });
+
+    it('burning and reminting resets shipping status', async () => {
+      const { token, deployer, alice, bob, minter, shipper } = tester;
+
+      await token.mint(alice, 77, "token_77_URI", { from:deployer });
+      await token.mint(alice, 2, "token_2_URI", { from:deployer });
+      await token.mint(bob, 101, "token_101_URI", { from:deployer });
+
+      await token.setTrophyStatus(77, 1, { from:shipper });
+      await token.setTrophyStatus(2, 2, { from:shipper });
+      await token.setTrophyStatus(101, 3, { from:shipper });
+
+      assert.equal(await token.trophyStatus(77), "Ready to Ship");
+      assert.equal(await token.trophyStatus(2), "In Transit");
+      assert.equal(await token.trophyStatus(101), "Received");
+
+      await token.burn(2, { from:deployer });
+      await token.mint(alice, 2, "token_2_URI", { from:deployer });
+
+      assert.equal(await token.trophyStatus(77), "Ready to Ship");
+      assert.equal(await token.trophyStatus(2), "In Progress");
+      assert.equal(await token.trophyStatus(101), "Received");
+    });
+  });
+}
+
 function testSetTokenURI(tester, testConfig = true) {
   context('setTokenURI', () => {
     if (testConfig) testUtilityConfig(tester, ["deployer", "alice", "updater", "minter"]);
@@ -1147,6 +1242,7 @@ module.exports = exports = {
   testRoleAdmin,
   testMint,
   testSafeMint,
+  testBurn,
   testSetTokenURI,
   testProvenanceRecord,
   testSetTrophyStatus,

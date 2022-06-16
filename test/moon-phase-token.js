@@ -43,6 +43,7 @@ contract('MoonPhaseToken', (accounts) => {
   tokens.testRoleAdmin(this);
   tokens.testMint(this);
   tokens.testSafeMint(this);
+  tokens.testBurn(this);
   tokens.testSetTokenURI(this);
   tokens.testProvenanceRecord(this);
   tokens.testSetTrophyStatus(this);
