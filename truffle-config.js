@@ -1,3 +1,6 @@
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const { mnemonic, projectID } = require('./secrets/infura.json');
+
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
@@ -71,6 +74,20 @@ module.exports = {
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+    mainnet: {
+      provider: function() {
+        return new HDWalletProvider(mnemonic, `https://mainnet.infura.io/v3/${projectID}`)
+      },
+      network_id: 1,
+      gas: 6000000,
+      gasPrice: 45000000000
+    },
+    rinkeby: {
+      provider: function() {
+        return new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${projectID}`)
+      },
+      network_id: 4
+    },
     test: {
       host: "127.0.0.1",
       port: 7545,
