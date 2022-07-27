@@ -28,20 +28,20 @@ const addresses = {
   }
 };
 
-const royalties = [
-  {
+const royalties = {
+  company: {
     address: addresses.company.royalty,
-    share: PLACEHOLDER_SHARE
+    share: 467  // 46.7%
   },
-  {
+  pace: {
     address: addresses.pace.royalty,
-    share: PLACEHOLDER_SHARE
+    share: 33   // 3.3%
   },
-  {
+  koons: {
     address: addresses.koons.royalty,
-    share: PLACEHOLDER_SHARE
+    share: 500  // 50%
   }
-]
+};
 
 module.exports = exports = {
   // royalty address will be given royalty payments

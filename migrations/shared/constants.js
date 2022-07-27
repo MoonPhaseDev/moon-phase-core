@@ -1,30 +1,23 @@
 // delete when real info is available
-const PLACEHOLDER_ADDRESS_1 = "0x0000000000000000000000000000000000001234";
-const PLACEHOLDER_ADDRESS_2 = "0x0000000000000000000000000000000000002345";
-const PLACEHOLDER_SHARE = 10;
+const PLACEHOLDER_ADDRESS = "0x0000000000000000000000000000000000001234";
 
 const addresses = {
   company: {
-    royalty: "0xC85E95922ec07B19B8aD15cFdFAD97705EA3203d",
-    admin: "0x75bC0F76ec4423Da8Ea6B415f98B90E2384E043e",
-    administration: [
-      "0x867a6B21803411c38dA19Cb826857e85E4b874bC",
-      "0xC85E95922ec07B19B8aD15cFdFAD97705EA3203d"
-    ],
-    management: [
-      "0x75bC0F76ec4423Da8Ea6B415f98B90E2384E043e",
-      "0x867a6B21803411c38dA19Cb826857e85E4b874bC"
-    ]
+    royalty: PLACEHOLDER_ADDRESS, // TODO: fill with real royalty address and update migration 4_royalty_splitter.js
+    admin: "0x276595505Eccec6aeCFaFF67964485b50C2F514E",
+    administration: ["0x276595505Eccec6aeCFaFF67964485b50C2F514E", "0x0d8f93084ea27b2e5838572503cb6fb4da78e819"],
+    management: ["0xE267E3B62d48CCbC6e8865c90698CfeC886A9769", "0x276595505Eccec6aeCFaFF67964485b50C2F514E"]
   },
   pace: {
-    royalty: PLACEHOLDER_ADDRESS_1,
-    admin: "0x51B656e5b88558989622800F18401aACBe0bad03",
-    administration: ["0x51B656e5b88558989622800F18401aACBe0bad03", "0xaD8D5861dE3eD236cF0E2bA30619885CF9CC2C64"]
+    royalty: "0x44369fe5a9D4b2054dDf54FD144fbA1f818Cc4EC",
+    admin: "0xF428Bf4154a9612123692Dd5968f9F408C981D99",
+    administration: ["0xF428Bf4154a9612123692Dd5968f9F408C981D99", "0x523c723C591400a215C9fCb74d573e251549835F"],
+    nfts: "0x67B2FdFdc341Fe9C8865421E57d8285305276Fab"
   },
   koons: {
-    royalty: PLACEHOLDER_ADDRESS_1,
-    admin: "0x1A463A4754c2E8fC855930043c3263C049dB9f70",
-    administration: ["0x1A463A4754c2E8fC855930043c3263C049dB9f70", "0x35c52ed11DD8aD760a4a8029102d80a4db37BDD0"]
+    royalty: "0x45093027DFb1Df4e5e464ff02147801E47AdB668",
+    admin: "0xA2Ab0317217Efc7a34B6a7ae56ABfd09b21Da89B",
+    administration: ["0xA2Ab0317217Efc7a34B6a7ae56ABfd09b21Da89B", "0xa7aCb39e9585bCEe5c9159FF99AaAe2c6edA22b8"]
   }
 };
 
@@ -41,7 +34,7 @@ const royalties = {
     address: addresses.koons.royalty,
     share: 500  // 50%
   }
-};
+}
 
 module.exports = exports = {
   // royalty address will be given royalty payments
