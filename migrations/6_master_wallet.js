@@ -2,7 +2,7 @@ const MoonPhaseToken = artifacts.require("MoonPhaseToken");
 
 const TeamJeffWallet = artifacts.require("TeamJeffWallet");
 const TeamPaceWallet = artifacts.require("TeamPaceWallet");
-const TeamCompanyWallet = artifacts.require("TeamCompanyWallet");
+const TeamCompanyManagementWallet = artifacts.require("TeamCompanyManagementWallet");
 const MasterWallet = artifacts.require("MasterWallet");
 
 module.exports = function (deployer) {
@@ -13,7 +13,7 @@ module.exports = function (deployer) {
     const teamWallets = [
       await TeamJeffWallet.deployed(),
       await TeamPaceWallet.deployed(),
-      await TeamCompanyWallet.deployed()
+      await TeamCompanyManagementWallet.deployed()
     ];
 
     await deployer.deploy(MasterWallet, teamWallets.map(w => w.address), teamWallets.length);
