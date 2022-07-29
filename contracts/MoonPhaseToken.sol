@@ -59,7 +59,7 @@ contract MoonPhaseToken is
 
     // Royalty Receiver
     address public royaltyReceiver;
-    uint256 public royaltyPercentBips; // eg 15% royalty would be 1500 bips
+    uint256 public royaltyPercentBips; // eg 10% royalty would be 1000 bips
 
     // Provenance hash
     string public provenanceDocumentationURI = "";

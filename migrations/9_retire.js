@@ -2,8 +2,8 @@ const MoonPhaseToken = artifacts.require("MoonPhaseToken");
 
 module.exports = function (deployer) {
   // retire privileges granted as the deployer of the token contract.
-  // all administration now handled through the MasterWallet; specific actions
-  // can be performed via the ActionWallet. There's no need to retain
+  // all administration now handled through the YWallet; specific actions
+  // can be performed via the ZWallet. There's no need to retain
   // privileges as the deployer at this point.
   deployer.then(async () => {
     // grant privileges

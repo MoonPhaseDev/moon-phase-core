@@ -1,9 +1,9 @@
 const MoonPhaseToken = artifacts.require("MoonPhaseToken");
 
-const TeamJeffWallet = artifacts.require("TeamJeffWallet");
-const TeamPaceWallet = artifacts.require("TeamPaceWallet");
-const TeamCompanyManagementWallet = artifacts.require("TeamCompanyManagementWallet");
-const MasterWallet = artifacts.require("MasterWallet");
+const TeamAWallet = artifacts.require("TeamAWallet");
+const TeamBWallet = artifacts.require("TeamBWallet");
+const TeamWWallet = artifacts.require("TeamWWallet");
+const YWallet = artifacts.require("YWallet");
 
 module.exports = function (deployer) {
   // the master wallet has all admin privileges and requires full 3-party consensus
@@ -11,13 +11,13 @@ module.exports = function (deployer) {
   // any other action, including establishing new administrative policies.
   deployer.then(async () => {
     const teamWallets = [
-      await TeamJeffWallet.deployed(),
-      await TeamPaceWallet.deployed(),
-      await TeamCompanyManagementWallet.deployed()
+      await TeamAWallet.deployed(),
+      await TeamBWallet.deployed(),
+      await TeamWWallet.deployed()
     ];
 
-    await deployer.deploy(MasterWallet, teamWallets.map(w => w.address), teamWallets.length);
-    const wallet = await MasterWallet.deployed();
+    await deployer.deploy(YWallet, teamWallets.map(w => w.address), teamWallets.length);
+    const wallet = await YWallet.deployed();
 
     // grant privileges
     token = await MoonPhaseToken.deployed();

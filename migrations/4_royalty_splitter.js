@@ -5,14 +5,14 @@ const constants = require('./shared/constants');
 module.exports = function (deployer, network, accounts) {
   deployer.then(async () => {
     let payees = [
-      constants.royalties.company.address,
-      constants.royalties.pace.address,
-      constants.royalties.koons.address
+      constants.royalties.teamA.address,
+      constants.royalties.teamB.address,
+      constants.royalties.teamC.address
     ]
     let shares = [
-      constants.royalties.company.share,
-      constants.royalties.pace.share,
-      constants.royalties.koons.share
+      constants.royalties.teamA.share,
+      constants.royalties.teamB.share,
+      constants.royalties.teamC.share
     ]
 
     console.log(`Migration Warning: PaymentSplitter not yet configured with royalty recipients.`);
