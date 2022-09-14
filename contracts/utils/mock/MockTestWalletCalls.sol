@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LGPL-3.0
 pragma solidity 0.8.10;
 
 // from https://github.com/gnosis/MultiSigWallet/blob/master/contracts/TestCalls.sol

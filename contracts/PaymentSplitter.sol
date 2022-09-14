@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
+// Copyright (c) 2016-2020 zOS Global Limited
 // OpenZeppelin Contracts v4.4.1 (finance/PaymentSplitter.sol)
+// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/6bd6b76d1156e20e45d1016f355d154141c7e5b9/contracts/finance/PaymentSplitter.sol
 
 pragma solidity 0.8.10;
 
