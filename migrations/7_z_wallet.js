@@ -37,6 +37,7 @@ module.exports = function (deployer) {
     token = await MoonPhaseToken.deployed();
     const roles = [
       web3.utils.soliditySha3('MINTER_ROLE'),
+      web3.utils.soliditySha3('FILTER_ROLE'),
       web3.utils.soliditySha3('UPDATER_ROLE')
     ];
 

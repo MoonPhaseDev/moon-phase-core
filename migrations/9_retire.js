@@ -1,4 +1,5 @@
 const MoonPhaseToken = artifacts.require("MoonPhaseToken");
+const XTimelock = artifacts.require('XTimelock');
 
 module.exports = function (deployer) {
   // retire privileges granted as the deployer of the token contract.
@@ -10,10 +11,12 @@ module.exports = function (deployer) {
     token = await MoonPhaseToken.deployed();
     const roles = [
       web3.utils.soliditySha3('MINTER_ROLE'),
+      web3.utils.soliditySha3('FILTER_ROLE'),
       web3.utils.soliditySha3('SHIPPER_ADMIN'),
       web3.utils.soliditySha3('UPDATER_ROLE'),
       web3.utils.soliditySha3('ROYALTY_ROLE'),
       web3.utils.soliditySha3('MINTER_ADMIN'),
+      web3.utils.soliditySha3('FILTER_ADMIN'),
       web3.utils.soliditySha3('SHIPPER_ADMIN'),
       web3.utils.soliditySha3('UPDATER_ADMIN'),
       web3.utils.soliditySha3('ROYALTY_ADMIN')
@@ -27,5 +30,8 @@ module.exports = function (deployer) {
         await token.renounceRole(role, me);
       }
     }
+
+    timelock = await XTimelock.deployed();
+    await timelock.renounceRole(web3.utils.soliditySha3('TIMELOCK_ADMIN_ROLE'), me);
   });
 };

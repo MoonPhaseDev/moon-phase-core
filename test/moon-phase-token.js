@@ -5,6 +5,7 @@ contract('MoonPhaseToken', (accounts) => {
   const MINTER_ROLE = web3.utils.soliditySha3('MINTER_ROLE');
   const SHIPPER_ROLE = web3.utils.soliditySha3('SHIPPER_ROLE');
   const UPDATER_ROLE = web3.utils.soliditySha3('UPDATER_ROLE');
+  const FILTER_ROLE = web3.utils.soliditySha3('FILTER_ROLE');
   const ROYALTY_ROLE = web3.utils.soliditySha3('ROYALTY_ROLE');
 
   const accountNames = ["deployer", "alice", "bob", "carol", "dave", "minter", "shipper", "updater", "royaltyManager", "royaltyReceiver", "transferManager"];
@@ -16,6 +17,7 @@ contract('MoonPhaseToken', (accounts) => {
     const { deployer, minter, shipper, updater, royaltyManager, royaltyReceiver } = this;
 
     this.token = await MoonPhaseToken.new("MoonPhaseToken", "MP", royaltyReceiver, 1500, { from: deployer });
+    await this.token.setFilterOperators(false, { from:deployer });
     await this.token.grantRole(MINTER_ROLE, minter);
     await this.token.grantRole(SHIPPER_ROLE, shipper);
     await this.token.grantRole(UPDATER_ROLE, updater);

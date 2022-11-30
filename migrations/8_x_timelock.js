@@ -10,7 +10,7 @@ const XTimelock = artifacts.require("XTimelock");
 
 const constants = require('./shared/constants');
 
-module.exports = function (deployer) {
+module.exports = function (deployer, network, accounts) {
   deployer.then(async () => {
     // grant privileges
     token = await MoonPhaseToken.deployed();
@@ -35,7 +35,7 @@ module.exports = function (deployer) {
       yWallet.address
     ])];
 
-    await deployer.deploy(XTimelock, hours48, proposers, executors);
+    await deployer.deploy(XTimelock, hours48, proposers, executors, accounts[0]);
     const timelock = await XTimelock.deployed();
     await token.grantRole(web3.utils.soliditySha3('ROYALTY_ROLE'), timelock.address);
 

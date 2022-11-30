@@ -844,12 +844,12 @@ function testTransferFrom(tester, testConfig = true) {
 
       await expectRevert(
         token.transferFrom(alice, dave, 0, { from:bob }),
-        "ERC721: transfer caller is not owner nor approved",
+        "ERC721: caller is not token owner or approved",
       );
 
       await expectRevert(
         token.transferFrom(alice, dave, 1, { from:minter }),
-        "ERC721: transfer caller is not owner nor approved",
+        "ERC721: caller is not token owner or approved",
       );
 
       await token.approve(minter, 3, { from:bob });
@@ -857,12 +857,12 @@ function testTransferFrom(tester, testConfig = true) {
 
       await expectRevert(
         token.transferFrom(bob, dave, 3, { from:alice }),
-        "ERC721: transfer caller is not owner nor approved",
+        "ERC721: caller is not token owner or approved",
       );
 
       await expectRevert(
         token.transferFrom(bob, dave, 4, { from:deployer }),
-        "ERC721: transfer caller is not owner nor approved",
+        "ERC721: caller is not token owner or approved",
       );
     });
 
@@ -994,12 +994,12 @@ function testSafeTransferFrom(tester, testConfig = true) {
 
       await expectRevert(
         token.safeTransferFrom(alice, dave, 0, { from:bob }),
-        "ERC721: transfer caller is not owner nor approved",
+        "ERC721: caller is not token owner or approved",
       );
 
       await expectRevert(
         token.safeTransferFrom(alice, dave, 1, { from:minter }),
-        "ERC721: transfer caller is not owner nor approved",
+        "ERC721: caller is not token owner or approved",
       );
 
       await token.approve(minter, 3, { from:bob });
@@ -1007,12 +1007,12 @@ function testSafeTransferFrom(tester, testConfig = true) {
 
       await expectRevert(
         token.safeTransferFrom(bob, dave, 3, { from:alice }),
-        "ERC721: transfer caller is not owner nor approved",
+        "ERC721: caller is not token owner or approved",
       );
 
       await expectRevert(
         token.safeTransferFrom(bob, dave, 4, { from:deployer }),
-        "ERC721: transfer caller is not owner nor approved",
+        "ERC721: caller is not token owner or approved",
       );
     });
 
@@ -1230,7 +1230,7 @@ async function tryTransfer(tester, { from, to, as, tokenId, permitted, approved,
   } else if (!permitted) {
     await expectRevert(txPromise, "MoonPhaseTransferPermissionToken: Transfer not permitted");
   } else if (!approved) {
-    await expectRevert(txPromise, "ERC721: transfer caller is not owner nor approved");
+    await expectRevert(txPromise, "ERC721: caller is not token owner or approved");
   } else if (!receiver) {
     await expectRevert(txPromise, "ERC721: transfer to non ERC721Receiver implementer");
   }

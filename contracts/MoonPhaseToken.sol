@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.10;
+pragma solidity 0.8.13;
 
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/interfaces/IERC2981.sol";
+import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
 
 /**
  * NFT contract representing the Jeff Koons Moon Phase project. Implements the
@@ -32,7 +33,8 @@ contract MoonPhaseToken is
     Ownable,
     ERC721URIStorage,
     ERC721Enumerable,
-    IERC2981
+    IERC2981,
+    DefaultOperatorFilterer
 {
     event TrophyStatusChanged(uint256 indexed tokenId, string trophyStatus);
     event TokenURIChanged(uint256 indexed tokenId, string tokenURI);
@@ -42,11 +44,13 @@ contract MoonPhaseToken is
     bytes32 public constant ROYALTY_ADMIN = keccak256("ROYALTY_ADMIN");
     bytes32 public constant SHIPPER_ADMIN = keccak256("SHIPPER_ADMIN");
     bytes32 public constant UPDATER_ADMIN = keccak256("UPDATER_ADMIN");
+    bytes32 public constant FILTER_ADMIN = keccak256("FILTER_ADMIN");
     bytes32 public constant MINTER_ADMIN = keccak256("MINTER_ADMIN");
 
     bytes32 public constant ROYALTY_ROLE = keccak256("ROYALTY_ROLE");
     bytes32 public constant SHIPPER_ROLE = keccak256("SHIPPER_ROLE");
     bytes32 public constant UPDATER_ROLE = keccak256("UPDATER_ROLE");
+    bytes32 public constant FILTER_ROLE = keccak256("FILTER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     uint256 constant STATUS_IN_PROGRESS = 0;
@@ -65,6 +69,9 @@ contract MoonPhaseToken is
     string public provenanceDocumentationURI = "";
     string public provenanceDocumentationHash = "";
     string public provenanceHash = "";
+
+    // Operator filterer
+    bool public filterOperators = true;
 
     /**
      * @dev Grants `DEFAULT_ADMIN_ROLE`, `ROYALTY_ROLE`, `SHIPPER_ROLE`,
@@ -98,6 +105,9 @@ contract MoonPhaseToken is
         _setRoleAdmin(UPDATER_ADMIN, UPDATER_ADMIN);
         _setRoleAdmin(UPDATER_ROLE, UPDATER_ADMIN);
 
+        _setRoleAdmin(FILTER_ADMIN, FILTER_ADMIN);
+        _setRoleAdmin(FILTER_ROLE, FILTER_ADMIN);
+
         _setRoleAdmin(MINTER_ADMIN, MINTER_ADMIN);
         _setRoleAdmin(MINTER_ROLE, MINTER_ADMIN);
 
@@ -105,11 +115,13 @@ contract MoonPhaseToken is
         _grantRole(ROYALTY_ADMIN, _msgSender());
         _grantRole(SHIPPER_ADMIN, _msgSender());
         _grantRole(UPDATER_ADMIN, _msgSender());
+        _grantRole(FILTER_ADMIN, _msgSender());
         _grantRole(MINTER_ADMIN, _msgSender());
 
         _grantRole(ROYALTY_ROLE, _msgSender());
         _grantRole(SHIPPER_ROLE, _msgSender());
         _grantRole(UPDATER_ROLE, _msgSender());
+        _grantRole(FILTER_ROLE, _msgSender());
         _grantRole(MINTER_ROLE, _msgSender());
     }
 
@@ -323,12 +335,13 @@ contract MoonPhaseToken is
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 tokenId
+        uint256 firstTokenId,
+        uint256 batchSize
     ) internal virtual override(
         ERC721,
         ERC721Enumerable
     ) {
-        super._beforeTokenTransfer(from, to, tokenId);
+        super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
 
     function _burn(
@@ -338,5 +351,42 @@ contract MoonPhaseToken is
         ERC721URIStorage
     ) {
         super._burn(tokenId);
+    }
+
+    // Operator Filterer
+
+    function setFilterOperators(bool _filterOperators) public virtual {
+        require(hasRole(FILTER_ROLE, _msgSender()), "MoonPhaseToken: must have filter role to setFilterOperators");
+        filterOperators = _filterOperators;
+    }
+
+    function setApprovalForAll(address operator, bool approved) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
+        super.setApprovalForAll(operator, approved);
+    }
+
+    function approve(address operator, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
+        super.approve(operator, tokenId);
+    }
+
+    function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperator(from) {
+        super.transferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperator(from) {
+        super.safeTransferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data)
+        public
+        override(ERC721, IERC721)
+        onlyAllowedOperator(from)
+    {
+        super.safeTransferFrom(from, to, tokenId, data);
+    }
+
+    function _checkFilterOperator(address operator) internal view override {
+        if (filterOperators) {
+            super._checkFilterOperator(operator);
+        }
     }
 }
